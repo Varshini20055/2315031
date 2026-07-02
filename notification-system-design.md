@@ -270,3 +270,52 @@ Example:
 - Pagination reduces database load but users see limited records per page.
 - Caching improves response time but cached data should be updated regularly.
 - WebSocket provides instant updates but requires maintaining active connections.
+
+
+
+
+# Stage 5
+
+## Problems
+
+- Sending notifications one by one is slow.
+- Email delivery may fail for some students.
+- The process may stop before all notifications are sent.
+
+## Improved Solution
+
+1. Save the notification in the database.
+2. Add email requests to a queue.
+3. Send push notifications.
+4. Retry failed emails automatically.
+
+## Retry Strategy
+
+- Retry failed emails after a short delay.
+- Limit the number of retry attempts.
+- Log failed notifications for future processing.
+
+## Revised Pseudocode
+
+```text
+function notifyAll(studentIds, message) {
+
+    saveNotification(message);
+
+    for each studentId in studentIds {
+
+        addToEmailQueue(studentId, message);
+
+        sendPushNotification(studentId, message);
+
+    }
+
+}
+```
+
+## Benefits
+
+- Faster notification delivery.
+- Reliable notification processing.
+- Failed emails can be retried.
+- Better performance for large numbers of users.
